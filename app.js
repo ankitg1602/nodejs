@@ -1,8 +1,8 @@
 const http = require('http');
 
 const server = http.createServer((req, res) => {
-    console.log(req)
-    process.exist() //exist the server
+    console.log(req.url, req.method, req.headers)  // / GET {...}
+    // process.exist() //exist the server
 })
 
 server.listen(3000)
