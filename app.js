@@ -1,20 +1,42 @@
 const http = require('http');
+const fs = require('fs');
 
 const server = http.createServer((req, res) => {
-    console.log(req.url, req.method, req.headers)  // / GET {...}
-    if (req.url === '/') { //first time control will come here as /
-        res.setHeader('Content-type', 'text/html');
-        res.write('<html>');   //here /message will append in localhost:8080/
-        res.write('<form action="/message" method="post"><input type="text" name="name"><button type="submit">Submit</button></form>');
-        res.write('</html>');
-        return res.end();
-    } 
-    //since after submitting form, url change to hhtp://localhost:8080/message/ control will come here
-    res.setHeader('Content-type', 'text/html');
-        res.write('<html>anitfdfsd');   //here /message will append in localhost:8080/
-        res.write('</html>');
-    res.end();   //ending the request
-    // process.exist() //exist the server
-})
+  const url = req.url;
+  const method = req.method;
+  if (url === '/') {
+    res.write('<html>');
+    res.write('<head><title>Enter Message</title><head>');
+    res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
+    res.write('</html>');
+    return res.end();
+  }
+  if (url === '/message' && method === 'POST') {
+    const body = [];
+    req.on('data', (chunk) => {
+      console.log(chunk);
+      body.push(chunk);
+    });
+    req.on('end', () => {
+      const parsedBody = Buffer.concat(body).toString();
+      const message = parsedBody.split('=')[1];
+      fs.writeFile('message.txt', message, (error) => {  // you should not use writeFileSync as it will blocks the execution till completion
+        if (!error) {
+          console.log('error:', error);
+          res.statusCode = 302;
+          res.setHeader('Location', '/');
+          return res.end();
+        }
+      });
+    });
+   
+  }
+  res.setHeader('Content-Type', 'text/html');
+  res.write('<html>');
+  res.write('<head><title>My First Page</title><head>');
+  res.write('<body><h1>Hello from my Node.js Server!</h1></body>');
+  res.write('</html>');
+  res.end();
+});
 
-server.listen(3000)
+server.listen(3000);
