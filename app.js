@@ -9,8 +9,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/admin', adminRoutes);
-
+app.use('/admin', adminRoutes);  //it will match url with /admin/add-product
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
