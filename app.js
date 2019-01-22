@@ -1,23 +1,21 @@
-// const http = require('http');
-
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use('/handle-message', (req, res, next) => {
-    console.log('in one middleware');
-    res.send(" I am in first one");
-      //if we are not using next() then it will not execute 2nd middleware
-})
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use('/add-product', (req, res, next) => {
+  res.send('<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product</button></form>');
+});
+
+app.post('/product', (req, res, next) => {
+    console.log(req.body);
+    res.redirect('/');
+});
 
 app.use('/', (req, res, next) => {
-    console.log('in 2nd middleware');
-    res.send('<html>2nd one</html>'); //by default express add conteext-type: texrt/html
-    // res.send('<html>ewewew</html>')  //still page not loaded as we have not returned any response
-})
+  res.send('<h1>Hello from Express!</h1>');
+});
 
-// const server = http.createServer(app);
-
-app.listen(3000);  //by using expressjs, we can listen without using http
-
-// server.listen(3000);
+app.listen(3000);
