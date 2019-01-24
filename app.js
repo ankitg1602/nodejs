@@ -25,7 +25,7 @@ app.use(errorController.get404);
 sequelize
    .sync()
    .then(result => {
-      console.log('result:', result);
+      console.log('result:', result);   //whenever server will start, it will create table if table doesnot exist
       app.listen(3000);
    })
    .catch(error => {
