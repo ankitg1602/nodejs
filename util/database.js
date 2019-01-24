@@ -1,9 +1,10 @@
-const pg = require('pg');
+const mysql = require('mysql2');
 
-const pool = {
-    
-}
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    database: 'node-complete',
+    password: 'nodecomplete'
+});
 
-const client = new pg.Client(`postgres://${pool.username}:${pool.password}@${pool.host}:${pool.port}/${pool.database}`);
-
-module.export = client.connect()
+module.exports = pool.promise();
